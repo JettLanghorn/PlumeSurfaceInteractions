@@ -1,12 +1,16 @@
 // the setup function runs once when you press reset or power the board
+#include <Stepper.h>
+const int stepsPerRev = 200;
 int Apos = 13;
 int Aneg = 12;
 int Bpos = 11;
 int Bneg = 10;
-float steps = 0;
-
+int steps = 0;
+int stepCount = 0;
+Stepper myStepper(stepsPerRev, Apos, Aneg, Bpos, Bneg);
 
 void setup() {
+  myStepper.setSpeed(60);
   pinMode(Apos, OUTPUT);
   pinMode(Aneg, OUTPUT);
   pinMode(Bpos, OUTPUT);
@@ -26,44 +30,15 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(Out1, HIGH);
-  digitalWrite(Out2, HIGH);
-  
-  Serial.println("Enter a height in thousands of an inch");
+  Serial.println("Enter the number of steps");
   while (Serial.available() <= 0) {
   }
-
-  number = map(Serial.parseInt(), 0, 3824, LowRef, HighRef);
-  //Serial.println(number);
+  steps = Serial.parseInt();
   Serial.parseInt();
-  CurrentPos = analogRead(A1);
-  
-  if ((number < HighRef) && (number >= LowRef)) {
-    while (number > CurrentPos) {
-      digitalWrite(Out1, LOW);
-      digitalWrite(Out2, HIGH);
-      delay(20);
-      CurrentPos = analogRead(A1);
-      //Serial.println(CurrentPos);
-    }
-    
-    while (number < CurrentPos) {
-      digitalWrite(Out1, HIGH);
-      digitalWrite(Out2, LOW);
-      delay(20);
-      CurrentPos = analogRead(A1);
-      //Serial.println(CurrentPos);
-    }
-
-    digitalWrite(Out1, HIGH);
-    digitalWrite(Out2, HIGH);
-    delay(2000);
-    Serial.print("Current Height: ");
-    Serial.println(map(analogRead(A1), LowRef, HighRef, 0, 3824));
-    //Serial.println(analogRead(A1));
-    
-  } else {
-    Serial.println("Please enter a height between 0 and 3824 in thousand of an inch");
-  }
-
+  Serial.println(steps);
+  //for (int i=0; i<steps; i++){
+    myStepper.step(steps);
+    //stepCount++;
+    //delay(10);
+  //}
 }

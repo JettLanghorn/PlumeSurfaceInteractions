@@ -5,6 +5,7 @@ int Apos = 13;
 int Aneg = 12;
 int Bpos = 11;
 int Bneg = 10;
+int zeroRef = 4;
 int steps = 0;
 int stepCount = 0;
 Stepper myStepper(stepsPerRev, Apos, Aneg, Bpos, Bneg);
@@ -15,13 +16,21 @@ void setup() {
   pinMode(Aneg, OUTPUT);
   pinMode(Bpos, OUTPUT);
   pinMode(Bneg, OUTPUT);
+  pinMode(zeroRef, INPUT);
   Serial.begin(9600);
+  
   Serial.println("Welcome! Enter anything to begin calibration.");
   while (Serial.available() <= 0) {
   }
   Serial.parseInt();
   Serial.parseInt();
   Serial.println("Calibrating...");
+
+  while (digitalRead(zeroRef)==LOW) {
+    myStepper.step(10);
+    delay(10);
+  }
+  
   digitalWrite(Apos, LOW);
   digitalWrite(Aneg, LOW);
   digitalWrite(Bpos, LOW);
@@ -36,9 +45,6 @@ void loop() {
   steps = Serial.parseInt();
   Serial.parseInt();
   Serial.println(steps);
-  //for (int i=0; i<steps; i++){
-    myStepper.step(steps);
-    //stepCount++;
-    //delay(10);
-  //}
+  
+  myStepper.step(steps);
 }

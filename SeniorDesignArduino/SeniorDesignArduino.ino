@@ -1,4 +1,3 @@
-// the setup function runs once when you press reset or power the board
 #include <Stepper.h>
 const int stepsPerRev = 200;
 int Apos = 13;
@@ -8,23 +7,39 @@ int Bneg = 10;
 int zeroRef = 4;
 int relay = 7;
 int steps = 0;
+int height = 0;
 int stepCount = 0;
+int menuNav = 0;
 Stepper myStepper(stepsPerRev, Apos, Aneg, Bpos, Bneg);
 
+void killSignals () {
+  digitalWrite(Apos, LOW);
+  digitalWrite(Aneg, LOW);
+  digitalWrite(Bpos, LOW);
+  digitalWrite(Bneg, LOW);
+  digitalWrite(relay, LOW);
+}
+
+int promptNum () {
+  while (Serial.available() <= 0) {
+  }
+  int temp = Serial.parseInt();
+  Serial.parseInt();
+  return temp;
+}
+
 void setup() {
-  myStepper.setSpeed(60);
+  myStepper.setSpeed(20);
   pinMode(Apos, OUTPUT);
   pinMode(Aneg, OUTPUT);
   pinMode(Bpos, OUTPUT);
   pinMode(Bneg, OUTPUT);
   pinMode(zeroRef, INPUT);
+  pinMode(relay, OUTPUT);
   Serial.begin(9600);
   
   Serial.println("Welcome! Enter anything to begin calibration.");
-  while (Serial.available() <= 0) {
-  }
-  Serial.parseInt();
-  Serial.parseInt();
+  promptNum();
   Serial.println("Calibrating...");
 
   //while (digitalRead(zeroRef)==LOW) {
@@ -32,25 +47,35 @@ void setup() {
   //  delay(10);
   //}
   
-  digitalWrite(Apos, LOW);
-  digitalWrite(Aneg, LOW);
-  digitalWrite(Bpos, LOW);
-  digitalWrite(Bneg, LOW);
+  killSignals();
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  Serial.println("Enter the number of steps");
-  while (Serial.available() <= 0) {
-  }
-  steps = Serial.parseInt();
-  Serial.parseInt();
-  if (steps == 2045) {
+  height = stepCount*10;
+  Serial.print("The current height is ");
+  Serial.print(height);
+  Serial.println(" micrometers.  Please Select:");
+  Serial.println("1 to ADJUST HEIGHT");
+  Serial.println("2 to FIRE");
+
+  menuNav = promptNum();
+  Serial.println(menuNav);
+  
+  switch (menuNav) {
+  case 1:
+    Serial.println("Enter the number of steps you would like to take");
+    steps = promptNum();
+    myStepper.step(steps);
+    break;
+  case 2:
     digitalWrite(relay, HIGH);
     delay(1000);
     digitalWrite(relay, LOW);
-  } else {
-    Serial.println(steps);
-    myStepper.step(steps);
-  }
+    break;
+  default:
+    Serial.println("Please select one of the options listed");
+    break;
+}
+
 }

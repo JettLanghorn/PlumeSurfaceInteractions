@@ -66,6 +66,8 @@ void loop() {
     Serial.println("Enter the number of steps you would like to take");
     steps = promptNum();
     myStepper.step(steps);
+    delay(1000);
+    killSignals();
     break;
   case 2:
     digitalWrite(relay, HIGH);

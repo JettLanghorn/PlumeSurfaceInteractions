@@ -9,7 +9,9 @@ int relay = 7;
 int steps = 0;
 int height = 0;
 int stepCount = 0;
+int stepsRemain = 0;
 int menuNav = 0;
+int testTime = 1000;
 Stepper myStepper(stepsPerRev, Apos, Aneg, Bpos, Bneg);
 
 void killSignals () {
@@ -52,10 +54,7 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  height = stepCount*10;
-  Serial.print("The current height is ");
-  Serial.print(height);
-  Serial.println(" micrometers.  Please Select:");
+  Serial.println("Please Select:");
   Serial.println("1 to ADJUST HEIGHT");
   Serial.println("2 to FIRE");
 
@@ -70,7 +69,7 @@ void loop() {
     break;
   case 2:
     digitalWrite(relay, HIGH);
-    delay(1000);
+    delay(testTime);
     digitalWrite(relay, LOW);
     break;
   default:

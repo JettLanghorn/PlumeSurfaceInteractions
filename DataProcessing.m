@@ -7,7 +7,7 @@ LBand = 50;       %Lower frequency limit, currently the desired frequency
 HBand = 120;       %Upper frequency limit, currently the desired frequency
 
 %Importing csv data, using the conversion factor, and plotting the signal
-Data = readmatrix('CorruptedSine.csv');
+Data = readmatrix('TEK00008.CSV');
 Data = Data(12:length(Data), :);
 Data(:, 2) = Data(:, 2)/conv;
 figure('Name','Pressure change over time (s)');

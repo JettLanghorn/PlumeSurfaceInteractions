@@ -11,7 +11,7 @@ int height = 0;
 int stepCount = 0;
 int stepsRemain = 0;
 int menuNav = 0;
-int testTime = 1000;
+int testTime = 30000;
 Stepper myStepper(stepsPerRev, Apos, Aneg, Bpos, Bneg);
 
 void killSignals () {
